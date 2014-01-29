@@ -60,7 +60,8 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
         //could be 'left, right'
         position: 'left'
       },
-      colors: ['steelBlue', 'rgb(255,153,0)', 'rgb(220,57,18)', 'rgb(70,132,238)', 'rgb(73,66,204)', 'rgb(0,128,0)']
+      colors: ['steelBlue', 'rgb(255,153,0)', 'rgb(220,57,18)', 'rgb(70,132,238)', 'rgb(73,66,204)', 'rgb(0,128,0)'],
+      margins: {top: 0, right: 40, bottom: 20, left: 40}
     }
 
     var totalWidth = element.width(), totalHeight = element.height();
@@ -161,6 +162,21 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
       return charts[type];
     }
 
+    /*
+     * Rotates the x axis labels if config has an xAxisRotate param specified
+     */
+    function rotateXAxis(xAxisHandle) {
+      if (config.xAxisRotate) {
+        xAxisHandle.selectAll("text")
+          .style("text-anchor", "end")
+          .attr("dx", "-.8em")
+          .attr("dy", ".15em")
+          .attr("transform", function(d) {
+            return "rotate(" + config.xAxisRotate + ")";
+          });
+      }
+    }
+
     /**
      * Filters down the x axis labels if a limit is specified
      */
@@ -181,7 +197,7 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
        * Setup date attributes
        * @type {Object}
        */
-      var margin = {top: 0, right: 20, bottom: 30, left: 40};
+      var margin = {top: config.margins.top, right: config.margins.right - 20, bottom: config.margins.bottom + 10, left: config.margins.left};
           width -=  margin.left + margin.right;
           height -= margin.top + margin.bottom;
 
@@ -243,10 +259,11 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
         .append("g")
           .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-      svg.append("g")
+      var xAxisHandle = svg.append("g")
           .attr("class", "x axis")
           .attr("transform", "translate(0," + height + ")")
           .call(xAxis);
+      rotateXAxis(xAxisHandle);
 
       svg.append("g")
           .attr("class", "y axis")
@@ -328,7 +345,7 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
      * @return {[type]} [description]
      */
     function lineChart() {
-      var margin = {top: 0, right: 40, bottom: 20, left: 40};
+      var margin = config.margins;
           width -= margin.left + margin.right;
           height -=  margin.top + margin.bottom;
 
@@ -390,10 +407,11 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
 
       y.domain([d3.min(yData), d3.max(yData) + padding]);
 
-      svg.append("g")
+      var xAxisHandle = svg.append("g")
           .attr("class", "x axis")
           .attr("transform", "translate(0," + height + ")")
           .call(xAxis);
+      rotateXAxis(xAxisHandle);
 
       svg.append("g")
           .attr("class", "y axis")
@@ -497,7 +515,7 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
      * @return {[type]} [description]
      */
     function areaChart() {
-      var margin = {top: 0, right: 40, bottom: 20, left: 40};
+      var margin = config.margins;
           width -= margin.left + margin.right;
           height -=  margin.top + margin.bottom;
 
@@ -565,10 +583,11 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
 
       y.domain([d3.min(yData), d3.max(yData) + padding]);
 
-      svg.append("g")
+      var xAxisHandle = svg.append("g")
           .attr("class", "x axis")
           .attr("transform", "translate(0," + height + ")")
           .call(xAxis);
+      rotateXAxis(xAxisHandle);
 
       svg.append("g")
           .attr("class", "y axis")
@@ -682,7 +701,7 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
 
 
     function pointChart() {
-      var margin = {top: 0, right: 40, bottom: 20, left: 40};
+      var margin = config.margins;
           width -= margin.left - margin.right;
           height -=  margin.top - margin.bottom;
 
@@ -740,10 +759,11 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
 
       y.domain([d3.min(yData), d3.max(yData) + padding]);
 
-      svg.append("g")
+      var xAxisHandle = svg.append("g")
           .attr("class", "x axis")
           .attr("transform", "translate(0," + height + ")")
           .call(xAxis);
+      rotateXAxis(xAxisHandle);
 
       svg.append("g")
           .attr("class", "y axis")
