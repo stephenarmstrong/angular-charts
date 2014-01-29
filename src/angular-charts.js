@@ -162,6 +162,17 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
     }
 
     /**
+     * Filters down the x axis labels if a limit is specified
+     */
+    function filterXAxis(xAxis, x) {
+      var allTicks = x.domain();
+      if (config.xAxisMaxTicks && allTicks.length > config.xAxisMaxTicks) {
+        var mod = Math.ceil(allTicks.length / config.xAxisMaxTicks);
+        xAxis.tickValues(allTicks.filter(function(e,i){ return (i % mod) == 0; }));
+      }
+    }
+
+    /**
      * Draws a bar chart, grouped with negative value handling
      * @return {[type]} [description]
      */
@@ -214,6 +225,7 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
       var xAxis = d3.svg.axis()
           .scale(x)
           .orient("bottom");
+      filterXAxis(xAxis, x);
 
       var yAxis = d3.svg.axis()
           .scale(y)
@@ -330,6 +342,7 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
       var xAxis = d3.svg.axis()
           .scale(x)
           .orient("bottom");
+      filterXAxis(xAxis, x);
 
       var yAxis = d3.svg.axis()
           .scale(y)
@@ -498,6 +511,7 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
       var xAxis = d3.svg.axis()
           .scale(x)
           .orient("bottom");
+      filterXAxis(xAxis, x);
 
       var yAxis = d3.svg.axis()
           .scale(y)
@@ -682,6 +696,7 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
       var xAxis = d3.svg.axis()
           .scale(x)
           .orient("bottom");
+      filterXAxis(xAxis, x);
 
       var yAxis = d3.svg.axis()
           .scale(y)

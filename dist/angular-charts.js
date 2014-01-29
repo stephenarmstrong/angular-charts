@@ -104,6 +104,15 @@ angular.module('angularCharts').directive('acChart', [
           };
         return charts[type];
       }
+      function filterXAxis(xAxis, x) {
+        var allTicks = x.domain();
+        if (config.xAxisMaxTicks && allTicks.length > config.xAxisMaxTicks) {
+          var mod = Math.ceil(allTicks.length / config.xAxisMaxTicks);
+          xAxis.tickValues(allTicks.filter(function (e, i) {
+            return i % mod == 0;
+          }));
+        }
+      }
       function barChart() {
         var margin = {
             top: 0,
@@ -153,6 +162,7 @@ angular.module('angularCharts').directive('acChart', [
           x.rangeBand()
         ]);
         var xAxis = d3.svg.axis().scale(x).orient('bottom');
+        filterXAxis(xAxis, x);
         var yAxis = d3.svg.axis().scale(y).orient('left').ticks(10).tickFormat(d3.format('s'));
         var svg = d3.select(chartContainer[0]).append('svg').attr('width', width + margin.left + margin.right).attr('height', height + margin.top + margin.bottom).append('g').attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
         svg.append('g').attr('class', 'x axis').attr('transform', 'translate(0,' + height + ')').call(xAxis);
@@ -224,6 +234,7 @@ angular.module('angularCharts').directive('acChart', [
             10
           ]);
         var xAxis = d3.svg.axis().scale(x).orient('bottom');
+        filterXAxis(xAxis, x);
         var yAxis = d3.svg.axis().scale(y).orient('left').ticks(5).tickFormat(d3.format('s'));
         var line = d3.svg.line().interpolate('cardinal').x(function (d) {
             return getX(d.x);
@@ -347,6 +358,7 @@ angular.module('angularCharts').directive('acChart', [
             10
           ]);
         var xAxis = d3.svg.axis().scale(x).orient('bottom');
+        filterXAxis(xAxis, x);
         var yAxis = d3.svg.axis().scale(y).orient('left').ticks(5).tickFormat(d3.format('s'));
         var line = d3.svg.line().interpolate('cardinal').x(function (d) {
             return getX(d.x);
@@ -473,6 +485,7 @@ angular.module('angularCharts').directive('acChart', [
             10
           ]);
         var xAxis = d3.svg.axis().scale(x).orient('bottom');
+        filterXAxis(xAxis, x);
         var yAxis = d3.svg.axis().scale(y).orient('left').ticks(5).tickFormat(d3.format('s'));
         var yData = [0];
         var linedata = [];
