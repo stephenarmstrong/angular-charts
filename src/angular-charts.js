@@ -61,7 +61,11 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
         position: 'left'
       },
       colors: ['steelBlue', 'rgb(255,153,0)', 'rgb(220,57,18)', 'rgb(70,132,238)', 'rgb(73,66,204)', 'rgb(0,128,0)'],
-      margins: {top: 0, right: 40, bottom: 20, left: 40}
+      margins: {top: 0, right: 40, bottom: 20, left: 40},
+      graphTypeLine: {
+        // Could be lineEnd for labels at the ends of lines, or traditional for a normal block on the side
+        legend: 'lineEnd'
+      }
     }
 
     var totalWidth = element.width(), totalHeight = element.height();
@@ -491,11 +495,13 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
      /**
       * Labels at the end of line
       */
-      point.append("text")
-        .datum(function(d) { return {name: d.series, value: d.values[d.values.length - 1]}; })
-        .attr("transform", function(d) { return "translate(" + getX(d.value.x) + "," + y(d.value.y) + ")"; })
-        .attr("x", 3)
-        .text(function(d) { return d.name; });
+      if (config.graphTypeLine.legend == 'lineEnd') {
+        point.append("text")
+          .datum(function(d) { return {name: d.series, value: d.values[d.values.length - 1]}; })
+          .attr("transform", function(d) { return "translate(" + getX(d.value.x) + "," + y(d.value.y) + ")"; })
+          .attr("x", 3)
+          .text(function(d) { return d.name; });
+      }
 
       /**
        * Returns x point of line point
@@ -869,7 +875,8 @@ angular.module('angularCharts').directive('acChart', function($templateCache, $c
           scope.legends.push({color : config.colors[key], title: value.x});
         });
       }
-      if(chartType == 'bar' || chartType == 'area' || chartType == 'point') {
+      if(chartType == 'bar' || chartType == 'area' || chartType == 'point' ||
+        (chartType == 'line' && config.graphTypeLine.legend == 'traditional' )) {
         angular.forEach(series, function(value, key){
           scope.legends.push({color : config.colors[key], title: value});
         }); 
